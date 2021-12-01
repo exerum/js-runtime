@@ -1,6 +1,6 @@
-use quickrs::Resolver;
-use quickrs::Loader;
-use quickrs::{BuiltinResolver, BuiltinLoader, FileResolver, ScriptLoader};
+use rquickjs::Resolver;
+use rquickjs::Loader;
+use rquickjs::{BuiltinResolver, BuiltinLoader, FileResolver, ScriptLoader};
 
 /// Use default loader and resolver
 pub fn init_loader_and_resolver() -> (impl Loader, impl Resolver) {

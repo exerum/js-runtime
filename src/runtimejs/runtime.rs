@@ -1,7 +1,7 @@
 use crate::runtimejs::resolver::init_loader_and_resolver;
 use crate::stdlib::init_stdlib;
 use protocol::{Code, RunModuleFunctionParameters};
-use quickrs::{Context, Function, Module, Runtime, Value};
+use rquickjs::{Context, Function, Module, Runtime, Value};
 use std::future::Future;
 use tokio::task;
 

@@ -10,7 +10,7 @@ tokio = {git = "https://github.com/exerum/tokio", branch = "wasmer-wasm32-wasi",
 protocol = { git = "https://github.com/exerum/protocol" }
 bincode = "1.3.3"
 
-[dependencies.quickrs]
+[dependencies.rquickjs]
 git = "https://github.com/exerum/quickrs"
 default-features = false
 version = "0.1.3"
