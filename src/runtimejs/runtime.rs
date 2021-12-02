@@ -1,4 +1,4 @@
-use crate::runtimejs::resolver::init_loader_and_resolver;
+use crate::runtimejs::init_loader_and_resolver;
 use crate::stdlib::init_stdlib;
 use protocol::{Code, RunModuleFunctionParameters};
 use rquickjs::{Context, Function, Module, Runtime, Value};
@@ -16,7 +16,7 @@ pub struct JsRuntime {
 impl JsRuntime {
     pub fn new() -> Self {
         let rt = Runtime::new().unwrap();
-        let (loader, resolver) = init_loader_and_resolver();
+        let (loader, resolver) = init_loader_and_resolver(".");
         rt.set_loader(resolver, loader);
         let context = Context::full(&rt).unwrap();
         init_stdlib(&context);
