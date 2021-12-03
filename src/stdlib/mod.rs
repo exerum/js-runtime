@@ -1,5 +1,5 @@
 use rquickjs::Context;
 
-pub fn init_stdlib(context: &Context) {
+pub fn init_stdlib(_context: &Context) {
 
 }

@@ -1,20 +1,30 @@
-use rquickjs::{Ctx, Loader, Result, Resolver};
-use std::collections::HashSet;
+use rquickjs::{Ctx, Result, Resolver};
+use std::collections::HashMap;
 use relative_path::{RelativePathBuf, RelativePath};
 use std::path::PathBuf;
+use super::module_specifier::ModuleSpecifier;
 use rquickjs::Error;
 
 #[derive(Debug, Default)]
 pub struct ExerumResolver {
-    project_root: PathBuf
+    project_root: PathBuf,
+    aliases: HashMap<String, String>
 }
 
 impl ExerumResolver {
 
     pub fn new(project_root: &str) -> Self {
         ExerumResolver {
-            project_root: PathBuf::from(project_root)
+            project_root: PathBuf::from(project_root),
+            aliases: HashMap::new()
         }
+    }
+
+    fn resolve_alias(&self, name: &str, relative_path: &RelativePath) -> Option<RelativePathBuf> {
+        self.aliases.get(&name.to_owned())
+            .map(|path| {
+                relative_path.join_normalized(&path)
+            })
     }
 
     fn resolve_node_modules(base: &RelativePathBuf, target: &str) -> Option<RelativePathBuf> {
@@ -23,7 +33,9 @@ impl ExerumResolver {
             let node_modules = dir.join("node_modules");
             if node_modules.to_path(".").is_dir() {
                 let path = node_modules.join(target);
-                return Some(path)
+                if path.to_path(".").exists() {
+                    return Some(path);
+                }
             }
             base = dir.parent();
         }
@@ -32,25 +44,45 @@ impl ExerumResolver {
 
     #[inline]
     fn resolve_internal(&mut self, base: &str, name: &str) -> Result<RelativePathBuf> {
+        // Strip the transpiler name if any
+        let ms = ModuleSpecifier::from(name);
+        let name = ms.path();
         let project_root = RelativePath::new(self.project_root.to_str().unwrap());
-        let path = if name.starts_with('.') {
-            let base = project_root.join_normalized(base);
-            if let Some(parent_dir) = base.parent() {
+        let base_buf = project_root.join_normalized(base);
+        if name.starts_with('.') {
+            // Resolve relative to file's parent only
+            let target = if let Some(parent_dir) = base_buf.parent() {
                 parent_dir.join_normalized(name)
             } else {
                 RelativePathBuf::from(name)
+            };
+            if target.to_path(".").exists() {
+                return Ok(target);
             }
         } else {
+            // Current folder first
+            if let Some(parent_dir) = base_buf.parent() {
+                let target = parent_dir.join_normalized(name);
+                if target.to_path(".").exists() {
+                    return Ok(target);
+                }
+            }
+            // Node modules
+            let in_node_modules = Self::resolve_node_modules(&base_buf, name);
+            if let Some(p) = in_node_modules {
+                return Ok(p);
+            }
+            // Project root
             let target = project_root.join_normalized(name);
             if target.to_path(".").exists() {
-                target
-            } else {
-                let base_buf = project_root.join_normalized(base);
-                Self::resolve_node_modules(&base_buf, name)
-                    .ok_or(Error::new_resolving(base, name))?
+                return Ok(target)
             }
         };
-        Ok(path)
+        // Resolve aliases
+        if let Some(alias) = self.resolve_alias(name, &project_root) {
+            return Ok(alias)
+        }
+        return Err(Error::new_resolving(base, name));
     }
 }
 
