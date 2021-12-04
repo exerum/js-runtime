@@ -53,3 +53,21 @@ fn test_module_specifier() {
     assert_eq!(ms.path, "react");
     assert_eq!(ms.transpiler_name, None);
 }
+
+#[test]
+fn test_empty_path() {
+    let ms = ModuleSpecifier::from("tr_name:");
+    assert_eq!(ms.path(), "")
+}
+
+#[test]
+fn test_empty_path_and_transpiler() {
+    let ms = ModuleSpecifier::from(":");
+    assert_eq!(ms.path(), "")
+}
+
+#[test]
+fn test_empty_transpiler() {
+    let ms = ModuleSpecifier::from(":./test");
+    assert_eq!(ms.transpiler(), Some(""))
+}

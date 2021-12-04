@@ -18,10 +18,9 @@ use swc_ecma_transforms_react::react;
 use swc_ecma_ast::Module;
 
 #[derive(Default)]
-pub struct SwcLoader {
-}
+pub struct SwcTools {}
 
-impl SwcLoader {
+impl SwcTools {
 
     pub fn load_js(&self, path: &str) -> String {
         let cm: Lrc<SourceMap> = Default::default();

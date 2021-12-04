@@ -95,38 +95,34 @@ impl Resolver for ExerumResolver {
 
 #[test]
 fn test_resolver_relative_to_current_file() {
-    let mut resolver = ExerumResolver::new("test");
+    let mut resolver = ExerumResolver::new("test_data");
     // import * as React from './react.js' // in src/main.tsx
     let resolved = resolver.resolve_internal("src/main.tsx", "./react.js").unwrap();
-    assert_eq!(resolved, "test/src/react.js");
+    assert_eq!(resolved, "test_data/src/react.js");
 }
 
 #[test]
 fn test_resolver_up_dir() {
-    let mut resolver = ExerumResolver::new("test");
+    let mut resolver = ExerumResolver::new("test_data");
     // import * as React from '../src/react.js' // in src/main.tsx
     let resolved = resolver.resolve_internal("src/main.tsx", "../src/react.js").unwrap();
-    assert_eq!(resolved, "test/src/react.js");
+    assert_eq!(resolved, "test_data/src/react.js");
 }
 
 // Note: rquickjs treats "./test/src/main.js" and "test/src/main.js" as different modules
 
-// #[test]
-// fn test_resolver_relative_to_project_root() {
-//     // This test will not pass because cargo wasi does not support arguments to wasm runner (wasmtime)
-//     // https://github.com/bytecodealliance/cargo-wasi/blob/main/src/lib.rs#L200
-//     let mut resolver = ExerumResolver::new("test");
-//     // import * as React from 'src/react.js' // in src/main.tsx
-//     let resolved = resolver.resolve_internal("src/main.tsx", "src/react.js").unwrap();
-//     assert_eq!(resolved, "test/src/react.js");
-// }
+#[test]
+fn test_resolver_relative_to_project_root() {
+    let mut resolver = ExerumResolver::new("test_data");
+    // import * as React from 'src/react.js' // in src/main.tsx
+    let resolved = resolver.resolve_internal("src/main.tsx", "src/react.js").unwrap();
+    assert_eq!(resolved, "test_data/src/react.js");
+}
 
-// #[test]
-// fn test_resolver_node_modules() {
-//     // This test will not pass because cargo wasi does not support arguments to wasm runner (wasmtime)
-//     // https://github.com/bytecodealliance/cargo-wasi/blob/main/src/lib.rs#L200
-//     let mut resolver = ExerumResolver::new("test");
-//     // import * as React from 'react/umd/react.js' // in src/main.tsx
-//     let resolved = resolver.resolve_internal("src/main.tsx", "react/umd/react.js").unwrap();
-//     assert_eq!(resolved, "test/node_modules/react/umd/react.js");
-// }
+#[test]
+fn test_resolver_node_modules() {
+    let mut resolver = ExerumResolver::new("test_data");
+    // import * as React from 'react/umd/react.js' // in src/main.tsx
+    let resolved = resolver.resolve_internal("src/main.tsx", "react/umd/react.js").unwrap();
+    assert_eq!(resolved, "test_data/node_modules/react/umd/react.js");
+}

@@ -1,0 +1,24 @@
+[package]
+name = "runtime"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+relative-path = "1.5.0"
+stdlib = { path = "../stdlib" }
+transpilers = { path = "../transpilers" }
+transpiler-typescript = { path = "../transpiler-typescript" }
+transpiler-jsx = { path = "../transpiler-jsx" }
+transpiler-js = { path = "../transpiler-js" }
+
+[dependencies.rquickjs]
+git = "https://github.com/exerum/quickrs"
+default-features = false
+version = "0.1.3"
+features = ["exports", "loader", "futures", "tokio"]
+branch = "wasm32-wasi"
+
+[dev-dependencies]
+tokio = { version = "1.14.0", features = ["rt", "time", "io-util"] }

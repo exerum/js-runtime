@@ -1,9 +1,9 @@
+pub mod rquickjs;
 use std::collections::HashMap;
 use std::rc::Rc;
 use std::cell::RefCell;
-use rquickjs::{Ctx, Module, Result, Loaded, Script};
 use core::cell::RefMut;
-
+use crate::rquickjs::{Ctx, Module, Loaded, Result, Script};
 /// Reusable trinspiler
 pub trait AssetTranspiler {
     fn transpile<'js>(&mut self, ctx: Ctx<'js>, path: &str) -> Result<Module<'js, Loaded<Script>>>;
