@@ -3,7 +3,6 @@ members = [
     "runtime",
     "stdlib",
     "exerum-wasm32-wasi",
-    "swc-tools",
     "transpilers",
     "transpiler-typescript",
     "transpiler-jsx"
