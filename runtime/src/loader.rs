@@ -65,7 +65,7 @@ mod tests {
     use crate::cache::NoCache;
     use transpiler_jsx::JsxTranspiler;
     use transpiler_typescript::TypescriptTranspiler;
-    use transpilers::{Transpilers, register, AssetTranspiler, TKey};
+    use transpilers::{Transpilers, register};
     #[test]
     fn test_resolver_loader() {
         fn print(msg: String) {

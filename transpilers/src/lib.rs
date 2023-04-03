@@ -18,11 +18,11 @@ pub enum TKey {
 #[macro_export]
 macro_rules! register {
     ($obj:ident, $name:literal, [$(.$ext:tt),*], $transpiler:ident) => {
-        let __t: std::rc::Rc<std::cell::RefCell<dyn AssetTranspiler>> = std::rc::Rc::new(std::cell::RefCell::new($transpiler::default()));
+        let __t: std::rc::Rc<std::cell::RefCell<dyn $crate::AssetTranspiler>> = std::rc::Rc::new(std::cell::RefCell::new($transpiler::default()));
         for __ext in vec![$(stringify!($ext),)*] {
-            $obj.register_transpiler(TKey::Extension(__ext.to_owned()), std::rc::Rc::clone(&__t));
+            $obj.register_transpiler($crate::TKey::Extension(__ext.to_owned()), std::rc::Rc::clone(&__t));
         };
-        $obj.register_transpiler(TKey::Name($name.to_owned()), std::rc::Rc::clone(&__t));
+        $obj.register_transpiler($crate::TKey::Name($name.to_owned()), std::rc::Rc::clone(&__t));
     }
 }
 
