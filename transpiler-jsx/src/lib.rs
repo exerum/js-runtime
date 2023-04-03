@@ -6,7 +6,7 @@ use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, EsConfig};
 use swc_ecma_transforms_base::fixer::fixer;
 use swc_ecma_transforms_react::react;
 use swc_ecma_visit::FoldWith;
-use swc_ecma_ast::Module;
+use swc_ecma_ast::{EsVersion, Module};
 use swc_common::{
     self,
     GLOBALS,
@@ -32,7 +32,6 @@ impl AssetTranspiler for JsxTranspiler {
         let lexer = Lexer::new(
             Syntax::Es(EsConfig {
                 jsx: path.ends_with("jsx"),
-                dynamic_import: true,
                 ..Default::default()
             }),
             Default::default(),
@@ -74,7 +73,12 @@ fn emit(cm: &Lrc<SourceMap>, module: &Module) -> String {
     let mut buf = vec![];
     {
         let mut emitter = Emitter {
-            cfg: swc_ecma_codegen::Config { minify: false },
+            cfg: swc_ecma_codegen::Config {
+                ascii_only: false,
+                omit_last_semi: true,
+                target: EsVersion::Es2020,
+                minify: false
+            },
             cm: cm.clone(),
             comments: None,
             wr: JsWriter::new(cm.clone(), "\n", &mut buf, None),

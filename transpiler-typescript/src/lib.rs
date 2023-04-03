@@ -7,7 +7,7 @@ use swc_ecma_transforms_base::fixer::fixer;
 use swc_ecma_transforms_react::react;
 use swc_ecma_transforms_typescript::strip;
 use swc_ecma_visit::FoldWith;
-use swc_ecma_ast::Module;
+use swc_ecma_ast::{EsVersion, Module};
 use swc_common::{
     self,
     GLOBALS,
@@ -33,7 +33,6 @@ impl AssetTranspiler for TypescriptTranspiler {
         let lexer = Lexer::new(
             Syntax::Typescript(TsConfig {
                 tsx: path.ends_with("tsx"),
-                dynamic_import: true,
                 ..Default::default()
             }),
             Default::default(),
@@ -58,7 +57,7 @@ impl AssetTranspiler for TypescriptTranspiler {
             let top_level_mark = Mark::fresh(Mark::root());
             // Remove typescript types
             let module = module
-                .fold_with(&mut strip())
+                .fold_with(&mut strip(top_level_mark))
                 // Transform tsx
                 .fold_with(&mut react::<SingleThreadedComments>(
                     cm.clone(),
@@ -79,7 +78,12 @@ fn emit(cm: &Lrc<SourceMap>, module: &Module) -> String {
     let mut buf = vec![];
     {
         let mut emitter = Emitter {
-            cfg: swc_ecma_codegen::Config { minify: false },
+            cfg: swc_ecma_codegen::Config {
+                ascii_only: false,
+                omit_last_semi: true,
+                target: EsVersion::Es2020,
+                minify: false
+            },
             cm: cm.clone(),
             comments: None,
             wr: JsWriter::new(cm.clone(), "\n", &mut buf, None),
