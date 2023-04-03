@@ -10,7 +10,7 @@ futures = "0.3.18"
 bincode = "1.3.3"
 runtime = { path = "../runtime" }
 tokio = {git = "https://github.com/exerum/tokio", branch = "wasmer-wasm32-wasi", features = [ "rt", "net", "time" ] }
-protocol = { git = "https://github.com/exerum/protocol" }
+protocol = { git = "git://git@github.com/exerum/protocol" }
 transpilers = { path = "../transpilers" }
 transpiler-typescript = { path = "../transpiler-typescript", optional = true }
 transpiler-jsx = { path = "../transpiler-jsx", optional = true }
